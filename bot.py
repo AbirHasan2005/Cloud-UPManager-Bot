@@ -22,7 +22,19 @@ async def start(bot, cmd):
 
 @Bot.on_message(filters.command("help"))
 async def help(bot, cmd):
-	await cmd.reply_text(Config.HELP_TEXT, parse_mode="Markdown", disable_web_page_preview=True, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Delete GoFile", switch_inline_query_current_chat="!godel "), InlineKeyboardButton("Delete Streamtape", switch_inline_query_current_chat="!stdel ")]]))
+	await cmd.reply_text(
+		Config.HELP_TEXT,
+		parse_mode="Markdown",
+		disable_web_page_preview=True,
+		reply_markup=InlineKeyboardMarkup(
+			[
+				[InlineKeyboardButton("Delete GoFile", switch_inline_query_current_chat="!godel "), InlineKeyboardButton("Delete Streamtape", switch_inline_query_current_chat="!stdel ")],
+				[InlineKeyboardButton("Rename Streamtape File", switch_inline_query_current_chat="!strename ")],
+				[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
+				[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")]
+			]
+		)
+	)
 
 @Bot.on_message(filters.private & filters.media)
 async def main(bot, message):
@@ -162,33 +174,38 @@ async def answer(bot, query: InlineQuery):
 				switch_pm_parameter="help"
 			)
 	elif search_query.startswith("!strename"):
-		input_f = search_query.split("!strename ")[1]
-		token = input_f[0:15]
-		new_filename = input_f[15:]
-
-		try:
-			await asyncio.sleep(5) # Waiting for 5 Sec for getting Correct User Input!
-			async with aiohttp.ClientSession() as session:
-				api_link = "https://api.streamtape.com/file/rename?login={}&key={}&file={}&name={}"
-				hit_api = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, token, new_filename))
-				data_f = await hit_api.json()
-				status = data_f['msg']
-				if status == "OK":
-					answers.append(
-						InlineQueryResultArticle(
-							text="File Renamed!",
-							description=f"Renamed to {new_filename} using {token}",
-							input_message_content=InputTextMessageContent(message_text=f"Successfully Renamed file to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
-						)
-					)
-				else:
-					answers.append(
-						InlineQueryResultArticle(text="Can't Rename File!", description=f"Token: {token} is Invalid!", input_message_content=InputTextMessageContent(message_text=f"Can't Rename File to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True))
-					)
-		except Exception as e:
+		if not int(query.from_user.id) == Config.BOT_OWNER:
 			answers.append(
-				InlineQueryResultArticle(text="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
+				InlineQueryResultArticle(title="You Can't Do That!", description="This is only for Bot Owner!", input_message_content=InputTextMessageContent(message_text="This is only for Bot Owner!\n\nOnly Developer have Streamtape File Delete Rights!"), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")], InlineKeyboardButton("Developer", url="https://t.me/linux_repo")]))
 			)
+		else:
+			input_f = search_query.split("!strename ")[1]
+			token = input_f[0:15]
+			new_filename = input_f[15:]
+
+			try:
+				await asyncio.sleep(5) # Waiting for 5 Sec for getting Correct User Input!
+				async with aiohttp.ClientSession() as session:
+					api_link = "https://api.streamtape.com/file/rename?login={}&key={}&file={}&name={}"
+					hit_api = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, token, new_filename))
+					data_f = await hit_api.json()
+					status = data_f['msg']
+					if status == "OK":
+						answers.append(
+							InlineQueryResultArticle(
+								text="File Renamed!",
+								description=f"Renamed to {new_filename} using {token}",
+								input_message_content=InputTextMessageContent(message_text=f"Successfully Renamed file to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
+							)
+						)
+					else:
+						answers.append(
+							InlineQueryResultArticle(text="Can't Rename File!", description=f"Token: {token} is Invalid!", input_message_content=InputTextMessageContent(message_text=f"Can't Rename File to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True))
+						)
+			except Exception as e:
+				answers.append(
+					InlineQueryResultArticle(text="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
+				)
 
 		try:
 			await query.answer(
@@ -210,8 +227,6 @@ async def answer(bot, query: InlineQuery):
 				hit_api = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, remote_link))
 				data_f = await hit_api.json()
 				status = data_f['msg']
-				# while not status == "OK":
-				# 	pass
 				if status == "OK":
 					token = data_f['result']['id']
 					answers.append(

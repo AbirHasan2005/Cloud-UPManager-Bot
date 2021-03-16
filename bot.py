@@ -109,7 +109,6 @@ async def answer(bot, query: InlineQuery):
 			)
 		except errors.QueryIdInvalid:
 			await query.answer(
-				query.id
 				results=answers,
 				cache_time=0,
 				switch_pm_text="Error: Search timed out!",
@@ -157,7 +156,6 @@ async def answer(bot, query: InlineQuery):
 			)
 		except errors.QueryIdInvalid:
 			await query.answer(
-				query.id,
 				results=answers,
 				cache_time=0,
 				switch_pm_text="Error: Search timed out!",

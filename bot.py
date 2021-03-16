@@ -27,7 +27,7 @@ async def help(bot, cmd):
 @Bot.on_message(filters.private & filters.media)
 async def main(bot, message):
 	admin = message.from_user.id
-	await cmd.reply_text(
+	await message.reply_text(
 		"Where you want to Upload?",
 		parse_mode="Markdown",
 		disable_web_page_preview=True,

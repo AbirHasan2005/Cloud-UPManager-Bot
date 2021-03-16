@@ -193,18 +193,18 @@ async def answer(bot, query: InlineQuery):
 					if status == "OK":
 						answers.append(
 							InlineQueryResultArticle(
-								text="File Renamed!",
+								title="File Renamed!",
 								description=f"Renamed to {new_filename} using {token}",
 								input_message_content=InputTextMessageContent(message_text=f"Successfully Renamed file to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
 							)
 						)
 					else:
 						answers.append(
-							InlineQueryResultArticle(text="Can't Rename File!", description=f"Token: {token} is Invalid!", input_message_content=InputTextMessageContent(message_text=f"Can't Rename File to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True))
+							InlineQueryResultArticle(title="Can't Rename File!", description=f"Token: {token} is Invalid!", input_message_content=InputTextMessageContent(message_text=f"Can't Rename File to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True))
 						)
 			except Exception as e:
 				answers.append(
-					InlineQueryResultArticle(text="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
+					InlineQueryResultArticle(title="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
 				)
 
 		try:
@@ -231,7 +231,7 @@ async def answer(bot, query: InlineQuery):
 					token = data_f['result']['id']
 					answers.append(
 						InlineQueryResultArticle(
-							text="URL Added!",
+							title="URL Added!",
 							description="Remote URL Added to List!",
 							input_message_content=InputTextMessageContent(message_text=f"Successfully Added Remote URL( {remote_link} ) to Remote List!\n\n**Remote Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True),
 							reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Show Status", switch_inline_query_current_chat=f"!show {token}")]])
@@ -239,11 +239,11 @@ async def answer(bot, query: InlineQuery):
 					)
 				else:
 					answers.append(
-						InlineQueryResultArticle(text="Can't Add Remote URL!", description=f"Some Issues with Remote URL!", input_message_content=InputTextMessageContent(message_text=f"Can't Upload Remote URL!\n\nRemote Link: {remote_link}\nHaving Some Issues.", parse_mode="Markdown", disable_web_page_preview=True))
+						InlineQueryResultArticle(title="Can't Add Remote URL!", description=f"Some Issues with Remote URL!", input_message_content=InputTextMessageContent(message_text=f"Can't Upload Remote URL!\n\nRemote Link: {remote_link}\nHaving Some Issues.", parse_mode="Markdown", disable_web_page_preview=True))
 					)
 		except Exception as e:
 			answers.append(
-				InlineQueryResultArticle(text="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
+				InlineQueryResultArticle(title="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
 			)
 
 		try:
@@ -275,7 +275,7 @@ async def answer(bot, query: InlineQuery):
 					url = data_f["result"][f"{input_f}"]["url"]
 					answers.append(
 						InlineQueryResultArticle(
-							text=f"TOKEN: {input_f}",
+							title=f"TOKEN: {input_f}",
 							description=f"Uploaded: {downloaded} Bytes, Total: {total_size} Bytes",
 							input_message_content=InputTextMessageContent(message_text=f"**Token:** `{input_f}`\n**Uploaded:** `{downloaded}`\n**Total:** `{total_size}`\n**Added Remote at:** `{added_at}`\n**Last Updated at:** `{last_update}`\n\n**URL:** {url}", parse_mode="Markdown", disable_web_page_preview=True),
 							reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Show Status", switch_inline_query_current_chat=f"!show {token}")]])
@@ -283,11 +283,11 @@ async def answer(bot, query: InlineQuery):
 					)
 				else:
 					answers.append(
-						InlineQueryResultArticle(text="Nothing Found!", description="Nothing ...", input_message_content=InputTextMessageContent(message_text="Nothing Found ...", parse_mode="Markdown", disable_web_page_preview=True))
+						InlineQueryResultArticle(title="Nothing Found!", description="Nothing ...", input_message_content=InputTextMessageContent(message_text="Nothing Found ...", parse_mode="Markdown", disable_web_page_preview=True))
 					)
 		except Exception as e:
 			answers.append(
-				InlineQueryResultArticle(text="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
+				InlineQueryResultArticle(title="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
 			)
 
 		try:

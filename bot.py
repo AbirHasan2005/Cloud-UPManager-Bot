@@ -109,10 +109,11 @@ async def answer(bot, query: InlineQuery):
 			)
 		except errors.QueryIdInvalid:
 			await query.answer(
+				query.id
 				results=answers,
 				cache_time=0,
 				switch_pm_text="Error: Search timed out!",
-				switch_pm_parameter="start",
+				switch_pm_parameter="help"
 			)
 	elif search_query.startswith("!gofile_del"):
 		try:
@@ -156,10 +157,11 @@ async def answer(bot, query: InlineQuery):
 			)
 		except errors.QueryIdInvalid:
 			await query.answer(
+				query.id,
 				results=answers,
 				cache_time=0,
 				switch_pm_text="Error: Search timed out!",
-				switch_pm_parameter="start",
+				switch_pm_parameter="help"
 			)
 
 @Bot.on_callback_query()
@@ -237,7 +239,7 @@ async def button(bot, data: CallbackQuery):
 			temp_api = json_data["result"]["url"]
 			files = {'file1': open(the_media, 'rb')}
 			response = await session.post(temp_api, data=files)
-			data_f = response.json()
+			data_f = await response.json()
 			status = data_f["status"]
 			download_link = data_f["result"]["url"]
 			filename = data_f["name"]

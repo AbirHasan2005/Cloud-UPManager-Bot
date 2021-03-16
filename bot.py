@@ -64,10 +64,13 @@ async def answer(bot, query: InlineQuery):
 	            description="Documention of How to Use this Bot.",
 	            thumb_url="https://i.imgur.com/6jZsMYG.png",
 	            reply_markup=InlineKeyboardMarkup(
-	            	[
-	            		[InlineKeyboardButton("Delete GoFile", switch_inline_query_current_chat="!godel "), InlineKeyboardButton("Delete Streamtape", switch_inline_query_current_chat="!stdel ")]
-	            	]
-	            )
+					[
+						[InlineKeyboardButton("Delete GoFile", switch_inline_query_current_chat="!godel "), InlineKeyboardButton("Delete Streamtape", switch_inline_query_current_chat="!stdel ")],
+						[InlineKeyboardButton("Rename Streamtape File", switch_inline_query_current_chat="!strename ")],
+						[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
+						[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")]
+					]
+				)
 	        )
 	    )
 	    await bot.answer_inline_query(
@@ -88,27 +91,45 @@ async def answer(bot, query: InlineQuery):
 				async with aiohttp.ClientSession() as session:
 					api_link = "https://api.streamtape.com/file/delete?login={}&key={}&file={}"
 					main_text = search_query.split("!stdel ")[1]
-					splited = main_text.split(" ")[0]
-					token = splited.split("/")[4]
-					delete = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, token))
-					data = await delete.json()
-					status = data['msg']
-					if status == "OK":
+					if main_text == "":
 						answers.append(
 							InlineQueryResultArticle(
-								title="Deleted File!",
-								description=f"Deleted [{token}]",
+								title="!stdel [file_link]",
+								description="Put File Link to Delete Streamtape File!",
 								input_message_content=InputTextMessageContent(
-									message_text=f"**Deleted:** {splited}\n\n**File Token:** `{token}`",
+									message_text="This for Deleting Streamtape File via File Link.\n\n**Format:** `@Cloud_UPManager_Bot !stdel `__[file_link]__",
 									parse_mode="Markdown",
 									disable_web_page_preview=True
+								),
+								reply_markup=InlineKeyboardMarkup(
+									[
+										[InlineKeyboardButton("Delete Streamtape File", switch_inline_query_current_chat="!stdel ")]
+									]
 								)
 							)
 						)
 					else:
-						answers.append(
-							InlineQueryResultArticle(title="File Not Deleted!", description=f"Can't Delete [{token}]", input_message_content=InputTextMessageContent(message_text=f"Can't Delete - {splited}\nUsing [{token}]", disable_web_page_preview=True, parse_mode="Markdown"))
-						)
+						splited = main_text.split(" ")[0]
+						token = splited.split("/")[4]
+						delete = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, token))
+						data = await delete.json()
+						status = data['msg']
+						if status == "OK":
+							answers.append(
+								InlineQueryResultArticle(
+									title="Deleted File!",
+									description=f"Deleted [{token}]",
+									input_message_content=InputTextMessageContent(
+										message_text=f"**Deleted:** {splited}\n\n**File Token:** `{token}`",
+										parse_mode="Markdown",
+										disable_web_page_preview=True
+									)
+								)
+							)
+						else:
+							answers.append(
+								InlineQueryResultArticle(title="File Not Deleted!", description=f"Can't Delete [{token}]", input_message_content=InputTextMessageContent(message_text=f"Can't Delete - {splited}\nUsing [{token}]", disable_web_page_preview=True, parse_mode="Markdown"))
+							)
 			except Exception as err:
 				answers.append(
 					InlineQueryResultArticle(title="Something Went Wrong!", description=f"Error: {err}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{err}`"), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")]]))
@@ -131,30 +152,47 @@ async def answer(bot, query: InlineQuery):
 			await asyncio.sleep(5) # Waiting for 5 Sec for getting Correct User Input!
 			async with aiohttp.ClientSession() as session:
 				api_link = "https://apiv2.gofile.io/deleteUpload?c={}&ac={}"
-				# https://gofile.io/d/{token}
 				main_text = search_query.split("!godel ")[1]
-				splited = main_text.split(" ")[0]
-				token = splited.split("/")[4]
-				adminCode = main_text.split(" ", 1)[1]
-				response = await session.get(api_link.format(token, adminCode))
-				data_f = await response.json()
-				status = data_f['status']
-				if status == "ok":
+				if main_text == "":
 					answers.append(
 						InlineQueryResultArticle(
-							title="Deleted File!",
-							description=f"Deleted [{token}], Using [{adminCode}]",
+							title="!godel [file_link] [AdminCode]",
+							description="Put File Link to Delete GoFile.io File!",
 							input_message_content=InputTextMessageContent(
-								message_text=f"**Deleted:** {splited}\n\n**Using AdminCode:** `{adminCode}`\n**File Token:** `{token}`",
+								message_text="This for Deleting GoFile.io File via File Link.\n\n**Format:** `@Cloud_UPManager_Bot !godel `__[file_link] [AdminCode]__",
 								parse_mode="Markdown",
 								disable_web_page_preview=True
+							),
+							reply_markup=InlineKeyboardMarkup(
+								[
+									[InlineKeyboardButton("Delete GoFile.io File", switch_inline_query_current_chat="!godel ")]
+								]
 							)
 						)
 					)
 				else:
-					answers.append(
-						InlineQueryResultArticle(title="File Not Deleted!", description=f"Can't Delete [{token}], Using [{adminCode}]", input_message_content=InputTextMessageContent(message_text=f"Can't Delete - {splited}\nUsing [{adminCode}]", disable_web_page_preview=True, parse_mode="Markdown"))
-					)
+					splited = main_text.split(" ")[0]
+					token = splited.split("/")[4]
+					adminCode = main_text.split(" ", 1)[1]
+					response = await session.get(api_link.format(token, adminCode))
+					data_f = await response.json()
+					status = data_f['status']
+					if status == "ok":
+						answers.append(
+							InlineQueryResultArticle(
+								title="Deleted File!",
+								description=f"Deleted [{token}], Using [{adminCode}]",
+								input_message_content=InputTextMessageContent(
+									message_text=f"**Deleted:** {splited}\n\n**Using AdminCode:** `{adminCode}`\n**File Token:** `{token}`",
+									parse_mode="Markdown",
+									disable_web_page_preview=True
+								)
+							)
+						)
+					else:
+						answers.append(
+							InlineQueryResultArticle(title="File Not Deleted!", description=f"Can't Delete [{token}], Using [{adminCode}]", input_message_content=InputTextMessageContent(message_text=f"Can't Delete - {splited}\nUsing [{adminCode}]", disable_web_page_preview=True, parse_mode="Markdown"))
+						)
 
 		except Exception as err:
 			answers.append(
@@ -179,28 +217,102 @@ async def answer(bot, query: InlineQuery):
 				InlineQueryResultArticle(title="You Can't Do That!", description="This is only for Bot Owner!", input_message_content=InputTextMessageContent(message_text="This is only for Bot Owner!\n\nOnly Developer have Streamtape File Delete Rights!"), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")], InlineKeyboardButton("Developer", url="https://t.me/linux_repo")]))
 			)
 		else:
-			input_f = search_query.split("!strename ")[1]
-			token = input_f[0:15]
-			new_filename = input_f[15:]
+			parts = search_query.split(" ", 2)
+			token = parts[1]
+			new_filename = input_f[2]
+			if (input_f == "" or token == "" or new_filename == ""):
+				answers.append(
+					InlineQueryResultArticle(
+						title="!strename [token] [new_filename]",
+						description="Put File Token & New File Name to Rename Streamtape File!",
+						input_message_content=InputTextMessageContent(
+							message_text="This for Renaming Streamtape File via File Token & New File Name.\n\n**Format:** `@Cloud_UPManager_Bot !strename `__[token] [new_filename]__",
+							parse_mode="Markdown",
+							disable_web_page_preview=True
+						),
+						reply_markup=InlineKeyboardMarkup(
+							[
+								[InlineKeyboardButton("Rename Streamtape File", switch_inline_query_current_chat="!stdel ")]
+							]
+						)
+					)
+				)
+			else:
+				try:
+					await asyncio.sleep(5) # Waiting for 5 Sec for getting Correct User Input!
+					async with aiohttp.ClientSession() as session:
+						api_link = "https://api.streamtape.com/file/rename?login={}&key={}&file={}&name={}"
+						hit_api = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, token, new_filename))
+						data_f = await hit_api.json()
+						status = data_f['msg']
+						if status == "OK":
+							answers.append(
+								InlineQueryResultArticle(
+									title="File Renamed!",
+									description=f"Renamed to {new_filename} using {token}",
+									input_message_content=InputTextMessageContent(message_text=f"Successfully Renamed file to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
+								)
+							)
+						else:
+							answers.append(
+								InlineQueryResultArticle(title="Can't Rename File!", description=f"Token: {token} is Invalid!", input_message_content=InputTextMessageContent(message_text=f"Can't Rename File to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True))
+							)
+				except Exception as e:
+					answers.append(
+						InlineQueryResultArticle(title="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
+					)
 
+		try:
+			await query.answer(
+				results=answers,
+				cache_time=0
+			)
+		except errors.QueryIdInvalid:
+			await query.answer(
+				results=answers,
+				cache_time=0,
+				switch_pm_text="Error: Search timed out!",
+				switch_pm_parameter="help"
+			)
+	elif search_query.startswith("!stremote"):
+		remote_link = search_query.split("!stremote ")[1]
+		if remote_link == "":
+			answers.append(
+				InlineQueryResultArticle(
+					title="!stremote [download_url]",
+					description="Put Direct Download Link to Upload to Streamtape!",
+					input_message_content=InputTextMessageContent(
+						message_text="This for Uploading to Streamtape via Any Direct Download Link.\n\n**Format:** `@Cloud_UPManager_Bot !stremote `__[download_url]__",
+						parse_mode="Markdown",
+						disable_web_page_preview=True
+					),
+					reply_markup=InlineKeyboardMarkup(
+						[
+							[InlineKeyboardButton("Add Remote to Streamtape", switch_inline_query_current_chat="!stremote ")]
+						]
+					)
+				)
+			)
+		else:
 			try:
-				await asyncio.sleep(5) # Waiting for 5 Sec for getting Correct User Input!
 				async with aiohttp.ClientSession() as session:
-					api_link = "https://api.streamtape.com/file/rename?login={}&key={}&file={}&name={}"
-					hit_api = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, token, new_filename))
+					api_link = "https://api.streamtape.com/remotedl/add?login={}&key={}&url={}"
+					hit_api = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, remote_link))
 					data_f = await hit_api.json()
 					status = data_f['msg']
 					if status == "OK":
+						token = data_f['result']['id']
 						answers.append(
 							InlineQueryResultArticle(
-								title="File Renamed!",
-								description=f"Renamed to {new_filename} using {token}",
-								input_message_content=InputTextMessageContent(message_text=f"Successfully Renamed file to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
+								title="URL Added!",
+								description="Remote URL Added to List!",
+								input_message_content=InputTextMessageContent(message_text=f"Successfully Added Remote URL( {remote_link} ) to Remote List!\n\n**Remote Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True),
+								reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Show Status", switch_inline_query_current_chat=f"!show {token}")]])
 							)
 						)
 					else:
 						answers.append(
-							InlineQueryResultArticle(title="Can't Rename File!", description=f"Token: {token} is Invalid!", input_message_content=InputTextMessageContent(message_text=f"Can't Rename File to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True))
+							InlineQueryResultArticle(title="Can't Add Remote URL!", description=f"Some Issues with Remote URL!", input_message_content=InputTextMessageContent(message_text=f"Can't Upload Remote URL!\n\nRemote Link: {remote_link}\nHaving Some Issues.", parse_mode="Markdown", disable_web_page_preview=True))
 						)
 			except Exception as e:
 				answers.append(
@@ -219,76 +331,55 @@ async def answer(bot, query: InlineQuery):
 				switch_pm_text="Error: Search timed out!",
 				switch_pm_parameter="help"
 			)
-	elif search_query.startswith("!stremote"):
-		remote_link = search_query.split("!stremote ")[1]
-		try:
-			async with aiohttp.ClientSession() as session:
-				api_link = "https://api.streamtape.com/remotedl/add?login={}&key={}&url={}"
-				hit_api = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, remote_link))
-				data_f = await hit_api.json()
-				status = data_f['msg']
-				if status == "OK":
-					token = data_f['result']['id']
-					answers.append(
-						InlineQueryResultArticle(
-							title="URL Added!",
-							description="Remote URL Added to List!",
-							input_message_content=InputTextMessageContent(message_text=f"Successfully Added Remote URL( {remote_link} ) to Remote List!\n\n**Remote Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True),
-							reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Show Status", switch_inline_query_current_chat=f"!show {token}")]])
-						)
-					)
-				else:
-					answers.append(
-						InlineQueryResultArticle(title="Can't Add Remote URL!", description=f"Some Issues with Remote URL!", input_message_content=InputTextMessageContent(message_text=f"Can't Upload Remote URL!\n\nRemote Link: {remote_link}\nHaving Some Issues.", parse_mode="Markdown", disable_web_page_preview=True))
-					)
-		except Exception as e:
-			answers.append(
-				InlineQueryResultArticle(title="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
-			)
-
-		try:
-			await query.answer(
-				results=answers,
-				cache_time=0
-			)
-		except errors.QueryIdInvalid:
-			await query.answer(
-				results=answers,
-				cache_time=0,
-				switch_pm_text="Error: Search timed out!",
-				switch_pm_parameter="help"
-			)
 	elif search_query.startswith("!show"):
 		input_f = search_query.split("!show ")[1]
-		try:
-			async with aiohttp.ClientSession() as session:
-				api_link = "https://api.streamtape.com/remotedl/status?login={}&key={}&id={}"
-				hit_api = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, input_f))
-				data_f = await hit_api.json()
-				status = data_f['msg']
-				if status == "OK":
-					remote_URL = data_f["result"][f"{input_f}"]["remoteurl"]
-					downloaded = data_f["result"][f"{input_f}"]["bytes_loaded"]
-					total_size = data_f["result"][f"{input_f}"]["bytes_total"]
-					added_at = data_f["result"][f"{input_f}"]["added"]
-					last_update = data_f["result"][f"{input_f}"]["last_update"]
-					url = data_f["result"][f"{input_f}"]["url"]
-					answers.append(
-						InlineQueryResultArticle(
-							title=f"TOKEN: {input_f}",
-							description=f"Uploaded: {downloaded} Bytes, Total: {total_size} Bytes",
-							input_message_content=InputTextMessageContent(message_text=f"**Token:** `{input_f}`\n**Uploaded:** `{downloaded}`\n**Total:** `{total_size}`\n**Added Remote at:** `{added_at}`\n**Last Updated at:** `{last_update}`\n\n**URL:** {url}", parse_mode="Markdown", disable_web_page_preview=True),
-							reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Show Status", switch_inline_query_current_chat=f"!show {token}")]])
-						)
-					)
-				else:
-					answers.append(
-						InlineQueryResultArticle(title="Nothing Found!", description="Nothing ...", input_message_content=InputTextMessageContent(message_text="Nothing Found ...", parse_mode="Markdown", disable_web_page_preview=True))
-					)
-		except Exception as e:
+		if input_f == "":
 			answers.append(
-				InlineQueryResultArticle(title="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
+				InlineQueryResultArticle(
+					title="!show [token]",
+					description="Put Streamtape Remote Access Token to Get Current Status of Streamtape Remote!",
+					input_message_content=InputTextMessageContent(
+						message_text="This for Getting Current Status of Streamtape Remote via Streamtape Remote Access Token. \n\n**Format:** `@Cloud_UPManager_Bot !show `__[token]__",
+						parse_mode="Markdown",
+						disable_web_page_preview=True
+					),
+					reply_markup=InlineKeyboardMarkup(
+						[
+							[InlineKeyboardButton("Get Streamtape Remote Status", switch_inline_query_current_chat="!show ")]
+						]
+					)
+				)
 			)
+		else:
+			try:
+				async with aiohttp.ClientSession() as session:
+					api_link = "https://api.streamtape.com/remotedl/status?login={}&key={}&id={}"
+					hit_api = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, input_f))
+					data_f = await hit_api.json()
+					status = data_f['msg']
+					if status == "OK":
+						remote_URL = data_f["result"][f"{input_f}"]["remoteurl"]
+						downloaded = data_f["result"][f"{input_f}"]["bytes_loaded"]
+						total_size = data_f["result"][f"{input_f}"]["bytes_total"]
+						added_at = data_f["result"][f"{input_f}"]["added"]
+						last_update = data_f["result"][f"{input_f}"]["last_update"]
+						url = data_f["result"][f"{input_f}"]["url"]
+						answers.append(
+							InlineQueryResultArticle(
+								title=f"TOKEN: {input_f}",
+								description=f"Uploaded: {downloaded} Bytes, Total: {total_size} Bytes",
+								input_message_content=InputTextMessageContent(message_text=f"**Token:** `{input_f}`\n**Uploaded:** `{downloaded}`\n**Total:** `{total_size}`\n**Added Remote at:** `{added_at}`\n**Last Updated at:** `{last_update}`\n\n**URL:** {url}", parse_mode="Markdown", disable_web_page_preview=True),
+								reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Show Status", switch_inline_query_current_chat=f"!show {input_f}")]])
+							)
+						)
+					else:
+						answers.append(
+							InlineQueryResultArticle(title="Nothing Found!", description="Nothing ...", input_message_content=InputTextMessageContent(message_text="Nothing Found ...", parse_mode="Markdown", disable_web_page_preview=True))
+						)
+			except Exception as e:
+				answers.append(
+					InlineQueryResultArticle(title="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
+				)
 
 		try:
 			await query.answer(
@@ -402,7 +493,7 @@ async def button(bot, data: CallbackQuery):
 					)
 				)
 	elif "deletestream" in cb_data:
-		data_revive = data.message.text
+		data_revive = data.message.reply_markup.inline_keyboard.url
 		token = data_revive.split("/")[4]
 		async with aiohttp.ClientSession() as session:
 			del_api = "https://api.streamtape.com/file/delete?login={}&key={}&file={}"

@@ -165,9 +165,9 @@ async def button(bot, data: CallbackQuery):
 	cb_data = data.data
 	if "uptogofile" in cb_data:
 		downloadit = data.message.reply_to_message
-		if not (int(downloadit.video.file_size) or int(downloadit.document.file_size)) <= 25500:
-			await data.message.edit("Sorry, I can only upload 500MB on GoFile.io !!")
-			return
+		# if not (int(downloadit.video.file_size) or int(downloadit.document.file_size)) <= 25500:
+		# 	await data.message.edit("Sorry, I can only upload 500MB on GoFile.io !!")
+		# 	return
 		a = await data.message.edit("Downloading to my Server ...", parse_mode="Markdown", disable_web_page_preview=True)
 		dl_loc = str(data.from_user.id) + "/"
 		if not os.path.isdir(dl_loc):
@@ -209,9 +209,9 @@ async def button(bot, data: CallbackQuery):
 			await a.edit(f"Something went wrong!\n\n**Error:** `{err}`")
 	elif "uptostreamtape" in cb_data:
 		downloadit = data.message.reply_to_message
-		if not (int(downloadit.video.file_size) or int(downloadit.document.file_size)) <= 25500:
-			await data.message.edit("Sorry, I can only upload 500MB on GoFile.io !!")
-			return
+		# if not (int(downloadit.video.file_size) or int(downloadit.document.file_size)) <= 25500:
+		# 	await data.message.edit("Sorry, I can only upload 500MB on GoFile.io !!")
+		# 	return
 		a = await data.message.edit("Downloading to my Server ...", parse_mode="Markdown", disable_web_page_preview=True)
 		dl_loc = str(data.from_user.id) + "/"
 		if not os.path.isdir(dl_loc):

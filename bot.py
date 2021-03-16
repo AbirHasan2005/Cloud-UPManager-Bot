@@ -102,17 +102,17 @@ async def answer(bot, query: InlineQuery):
 				)
 
 		try:
-	        await query.answer(
-	            results=answers,
-	            cache_time=0
-	        )
-	    except errors.QueryIdInvalid:
-	        await query.answer(
-	            results=answers,
-	            cache_time=0,
-	            switch_pm_text="Error: Search timed out!",
-	            switch_pm_parameter="start",
-	        )
+			await query.answer(
+				results=answers,
+				cache_time=0
+			)
+		except errors.QueryIdInvalid:
+			await query.answer(
+				results=answers,
+				cache_time=0,
+				switch_pm_text="Error: Search timed out!",
+				switch_pm_parameter="start",
+			)
 	elif search_query.startswith("!gofile_del"):
 		try:
 			await asyncio.sleep(5) # Waiting for 5 Sec for getting Correct User Input!
@@ -148,17 +148,17 @@ async def answer(bot, query: InlineQuery):
 			)
 
 		try:
-	        await query.answer(
-	            results=answers,
-	            cache_time=0
-	        )
-	    except errors.QueryIdInvalid:
-	        await query.answer(
-	            results=answers,
-	            cache_time=0,
-	            switch_pm_text="Error: Search timed out!",
-	            switch_pm_parameter="start",
-	        )
+			await query.answer(
+				results=answers,
+				cache_time=0
+			)
+		except errors.QueryIdInvalid:
+			await query.answer(
+				results=answers,
+				cache_time=0,
+				switch_pm_text="Error: Search timed out!",
+				switch_pm_parameter="start",
+			)
 
 @Bot.on_callback_query()
 async def button(bot, data: CallbackQuery):
@@ -175,13 +175,13 @@ async def button(bot, data: CallbackQuery):
 		c_time = time.time()
 		the_media = await bot.download_media(
 			message=downloadit,
-	        file_name=dl_loc,
-	        progress=progress_for_pyrogram,
-	        progress_args=(
-	            "Download kortasi ...",
-	            a,
-	            c_time
-	        )
+			file_name=dl_loc,
+			progress=progress_for_pyrogram,
+			progress_args=(
+				"Download kortasi ...",
+				a,
+				c_time
+			)
 		)
 		await a.delete(True)
 		try:
@@ -219,13 +219,13 @@ async def button(bot, data: CallbackQuery):
 		c_time = time.time()
 		the_media = await bot.download_media(
 			message=downloadit,
-	        file_name=dl_loc,
-	        progress=progress_for_pyrogram,
-	        progress_args=(
-	            "Download kortasi ...",
-	            a,
-	            c_time
-	        )
+			file_name=dl_loc,
+			progress=progress_for_pyrogram,
+			progress_args=(
+				"Download kortasi ...",
+				a,
+				c_time
+			)
 		)
 		await a.delete(True)
 		async with aiohttp.ClientSession() as session:

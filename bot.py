@@ -18,7 +18,7 @@ Bot = Client(Config.SESSION_NAME, bot_token=Config.BOT_TOKEN, api_id=Config.API_
 
 @Bot.on_message(filters.command("start"))
 async def start(bot, cmd):
-	await cmd.reply_text("I am Alive!")
+	await cmd.reply_text("HI, I am Cloud Uploads Manager Bot!\n\nI can Do a Lot of Things, Check > /help <")
 
 @Bot.on_message(filters.command("help"))
 async def help(bot, cmd):
@@ -28,6 +28,7 @@ async def help(bot, cmd):
 		disable_web_page_preview=True,
 		reply_markup=InlineKeyboardMarkup(
 			[
+				[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo"), InlineKeyboardButton("Developer", url="https://t.me/AbirHasan2005")],
 				[InlineKeyboardButton("Delete GoFile", switch_inline_query_current_chat="!godel "), InlineKeyboardButton("Delete Streamtape", switch_inline_query_current_chat="!stdel ")],
 				[InlineKeyboardButton("Rename Streamtape File", switch_inline_query_current_chat="!strename ")],
 				[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
@@ -65,6 +66,7 @@ async def answer(bot, query: InlineQuery):
 	            thumb_url="https://i.imgur.com/6jZsMYG.png",
 	            reply_markup=InlineKeyboardMarkup(
 					[
+						[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo"), InlineKeyboardButton("Developer", url="https://t.me/AbirHasan2005")],
 						[InlineKeyboardButton("Delete GoFile", switch_inline_query_current_chat="!godel "), InlineKeyboardButton("Delete Streamtape", switch_inline_query_current_chat="!stdel ")],
 						[InlineKeyboardButton("Rename Streamtape File", switch_inline_query_current_chat="!strename ")],
 						[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],

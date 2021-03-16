@@ -75,7 +75,8 @@ async def answer(bot, query: InlineQuery):
 				await asyncio.sleep(5) # Waiting for 5 Sec for getting Correct User Input!
 				async with aiohttp.ClientSession() as session:
 					api_link = "https://api.streamtape.com/file/delete?login={}&key={}&file={}"
-					splited = search_query.split(" ")[0]
+					main_text = search_query.split("!streamtape_del ")[1]
+					splited = main_text.split(" ")[0]
 					token = splited.split("/")[4]
 					delete = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, token))
 					data = await delete.json()
@@ -119,9 +120,10 @@ async def answer(bot, query: InlineQuery):
 			async with aiohttp.ClientSession() as session:
 				api_link = "https://apiv2.gofile.io/deleteUpload?c={}&ac={}"
 				# https://gofile.io/d/{token}
-				splited = search_query.split(" ")[0]
+				main_text = search_query.split("!gofile_del ")[1]
+				splited = main_text.split(" ")[0]
 				token = splited.split("/")[4]
-				adminCode = search_query.split(" ", 1)[1]
+				adminCode = main_text.split(" ", 1)[1]
 				response = await session.get(api_link.format(token, adminCode))
 				data_f = await response.json()
 				status = data_f['status']

@@ -240,7 +240,7 @@ async def button(bot, data: CallbackQuery):
 			data_f = await response.json(content_type=None)
 			status = data_f["status"]
 			download_link = data_f["result"]["url"]
-			filename = data_f["name"]
+			filename = the_media.split("/")[-1].replace("_"," ")
 			try:
 				os.remove(the_media)
 			except:

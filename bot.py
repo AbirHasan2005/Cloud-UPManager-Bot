@@ -495,7 +495,8 @@ async def button(bot, data: CallbackQuery):
 					)
 				)
 	elif "deletestream" in cb_data:
-		data_revive = data.message.reply_markup.inline_keyboard.url
+		data_revive = data.message.text.split("Link: ", 1)
+		data_revive = data_revive[1]
 		token = data_revive.split("/")[4]
 		async with aiohttp.ClientSession() as session:
 			del_api = "https://api.streamtape.com/file/delete?login={}&key={}&file={}"

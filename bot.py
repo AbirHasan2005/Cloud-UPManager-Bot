@@ -261,3 +261,5 @@ async def button(bot, data: CallbackQuery):
 				await data.message.edit(f"File Deleted using `{token}` !!")
 			else:
 				await data.message.edit("File not Found!")
+
+Bot.run()

@@ -8,7 +8,7 @@ import aiohttp
 from configs import Config
 from datetime import datetime
 from pyrogram import Client, filters, errors
-from core.display_progress import progress_for_pyrogram
+from core.display_progress import progress_for_pyrogram, humanbytes
 from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked, PeerIdInvalid
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ForceReply, InlineQueryResultArticle, InputTextMessageContent, InlineQuery
 from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant, UsernameNotOccupied, ChatAdminRequired, PeerIdInvalid
@@ -33,7 +33,8 @@ async def help(bot, cmd):
 				[InlineKeyboardButton("Rename Streamtape File (Admin Only)", switch_inline_query_current_chat="!strename ")],
 				[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
 				[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")],
-				[InlineKeyboardButton("Rmeove Remote URL (Admin Only)", switch_inline_query_current_chat="!strmdel ")]
+				[InlineKeyboardButton("Rmeove Remote URL (Admin Only)", switch_inline_query_current_chat="!strmdel ")],
+				[InlineKeyboardButton("Show Configs (Admin Only)", callback_data="showcreds")]
 			]
 		)
 	)
@@ -73,7 +74,8 @@ async def answer(bot, query: InlineQuery):
 						[InlineKeyboardButton("Rename Streamtape File (Admin Only)", switch_inline_query_current_chat="!strename ")],
 						[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
 						[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")],
-						[InlineKeyboardButton("Rmeove Remote URL (Admin Only)", switch_inline_query_current_chat="!strmdel ")]
+						[InlineKeyboardButton("Rmeove Remote URL (Admin Only)", switch_inline_query_current_chat="!strmdel ")],
+						[InlineKeyboardButton("Show Configs (Admin Only)", callback_data="showcreds")]
 					]
 				)
 	        )
@@ -157,6 +159,7 @@ async def answer(bot, query: InlineQuery):
 									)
 								)
 							)
+							await bot.send_message(chat_id=Config.LOG_CHANNEL, text=f"#STREAMTAPE_DELETE:\n\n[{query.from_user.first_name}](tg://user?id={query.from_user.id}) Deleted Streamtape File !!\n\n**File Name:** {splited}\n\n**File Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
 						else:
 							answers.append(
 								InlineQueryResultArticle(title="File Not Deleted!", description=f"Can't Delete [{token}]", input_message_content=InputTextMessageContent(message_text=f"Can't Delete - {splited}\nUsing [{token}]", disable_web_page_preview=True, parse_mode="Markdown"))
@@ -237,6 +240,7 @@ async def answer(bot, query: InlineQuery):
 								)
 							)
 						)
+						await bot.send_message(chat_id=Config.LOG_CHANNEL, text=f"#GOFILE_DELETE:\n\n[{query.from_user.first_name}](tg://user?id={query.from_user.id}) Deleted GoFile.io File !!\n\n**File Name:** {splited}\n\n**AdminCode:** `{adminCode}`\n\n**File Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
 					else:
 						answers.append(
 							InlineQueryResultArticle(title="File Not Deleted!", description=f"Can't Delete [{token}], Using [{adminCode}]", input_message_content=InputTextMessageContent(message_text=f"Can't Delete - {splited}\nUsing [{adminCode}]", disable_web_page_preview=True, parse_mode="Markdown"))
@@ -320,6 +324,7 @@ async def answer(bot, query: InlineQuery):
 									input_message_content=InputTextMessageContent(message_text=f"Successfully Renamed file to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
 								)
 							)
+							await bot.send_message(chat_id=Config.LOG_CHANNEL, text=f"#STREAMTAPE_RENAME:\n\n[{query.from_user.first_name}](tg://user?id={query.from_user.id}) Renamed Streamtape File !!\n\n**New File Name:** {new_filename}\n\n**File Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
 						else:
 							answers.append(
 								InlineQueryResultArticle(title="Can't Rename File!", description=f"Token: {token} is Invalid!", input_message_content=InputTextMessageContent(message_text=f"Can't Rename File to - `{new_filename}`\n\nUsing `{token}`", parse_mode="Markdown", disable_web_page_preview=True))
@@ -342,6 +347,22 @@ async def answer(bot, query: InlineQuery):
 				switch_pm_parameter="help"
 			)
 	elif search_query.startswith("!strmdel"):
+		if not int(query.from_user.id) == Config.BOT_OWNER:
+			answers.append(
+				InlineQueryResultArticle(
+					title="You Can't Do That!",
+					description="This is only for Bot Owner!",
+					input_message_content=InputTextMessageContent(
+						message_text="This is only for Bot Owner!\n\nOnly Developer have Streamtape File Delete Rights!"
+					),
+					reply_markup=InlineKeyboardMarkup(
+						[
+							[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")],
+							[InlineKeyboardButton("Developer", url="https://t.me/linux_repo")]
+						]
+					)
+				)
+			)
 		token = None
 		try:
 			token = search_query.split("!strmdel ")[1]
@@ -379,9 +400,10 @@ async def answer(bot, query: InlineQuery):
 							InlineQueryResultArticle(
 								title="Removed Remote!",
 								description="Remote URL Removed from Streamtape Account!",
-								input_message_content=InputTextMessageContent(message_text=f"Successfully Removed Remote URL( {remote_link} ) from Streamtape Account!\n\n**Remote Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
+								input_message_content=InputTextMessageContent(message_text=f"Successfully Removed Remote URL from Streamtape Account!\n\n**Remote Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
 							)
 						)
+						await bot.send_message(chat_id=Config.LOG_CHANNEL, text=f"#REMOTE_URL_REMOVE:\n\n[{query.from_user.first_name}](tg://user?id={query.from_user.id}) Removed Remote URL from Streamtape Account !!\n\n**Remote Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
 					else:
 						answers.append(
 							InlineQueryResultArticle(title="Can't Remove Remote URL!", description=f"Some Issues with Remote Token!", input_message_content=InputTextMessageContent(message_text=f"Can't Remove Remote URL!\n\nRemote Token: {token}\nHaving Some Issues.", parse_mode="Markdown", disable_web_page_preview=True))
@@ -446,6 +468,7 @@ async def answer(bot, query: InlineQuery):
 								reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Show Status", switch_inline_query_current_chat=f"!show {token}")]])
 							)
 						)
+						await bot.send_message(chat_id=Config.LOG_CHANNEL, text=f"#REMOTE_URL_ADD:\n\n[{query.from_user.first_name}](tg://user?id={query.from_user.id}) Added Remote URL to Streamtape Account !!\n\n**Remote URL:** {remote_link}\n\n**Remote Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
 					else:
 						answers.append(
 							InlineQueryResultArticle(title="Can't Add Remote URL!", description=f"Some Issues with Remote URL!", input_message_content=InputTextMessageContent(message_text=f"Can't Upload Remote URL!\n\nRemote Link: {remote_link}\nHaving Some Issues.", parse_mode="Markdown", disable_web_page_preview=True))
@@ -511,8 +534,8 @@ async def answer(bot, query: InlineQuery):
 						answers.append(
 							InlineQueryResultArticle(
 								title=f"TOKEN: {input_f}",
-								description=f"Uploaded: {downloaded} Bytes, Total: {total_size} Bytes",
-								input_message_content=InputTextMessageContent(message_text=f"**Token:** `{input_f}`\n**Uploaded:** `{downloaded}`\n**Total:** `{total_size}`\n**Added Remote at:** `{added_at}`\n**Last Updated at:** `{last_update}`\n\n**URL:** {url}", parse_mode="Markdown", disable_web_page_preview=True),
+								description=f"Uploaded: {humanbytes(downloaded)} Bytes, Total: {humanbytes(total_size)} Bytes",
+								input_message_content=InputTextMessageContent(message_text=f"**Token:** `{input_f}`\n**Uploaded:** `{humanbytes(downloaded)}`\n**Total:** `{humanbytes(total_size)}`\n**Added Remote at:** `{added_at}`\n**Last Updated at:** `{last_update}`\n\n**URL:** {url}", parse_mode="Markdown", disable_web_page_preview=True),
 								reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Show Status", switch_inline_query_current_chat=f"!show {input_f}")]])
 							)
 						)
@@ -580,6 +603,8 @@ async def button(bot, data: CallbackQuery):
 					os.remove(the_media)
 				except:
 					pass
+				forwarded_msg = data.message.reply_to_message.forward(Config.LOG_CHANNEL)
+				await bot.send_message(chat_id=Config.LOG_CHANNEL, text=f"#GOFILE_UPLOAD:\n\n[{data.from_user.first_name}](tg://user?id={data.from_user.id}) Uploaded to GoFile.io !!\n\n**URL:** https://gofile.io/d/{token}", reply_to_message_id=forwarded_msg.message_id, parse_mode="Markdown", quote=True, disable_web_page_preview=True)
 		except Exception as err:
 			await a.edit(f"Something went wrong!\n\n**Error:** `{err}`")
 	elif "uptostreamtape" in cb_data:
@@ -630,6 +655,8 @@ async def button(bot, data: CallbackQuery):
 						]
 					)
 				)
+				forwarded_msg = data.message.reply_to_message.forward(Config.LOG_CHANNEL)
+				await bot.send_message(chat_id=Config.LOG_CHANNEL, text=f"#STREAMTAPE_UPLOAD:\n\n[{data.from_user.first_name}](tg://user?id={data.from_user.id}) Uploaded to Streamtape !!\n\n**URL:** {download_link}", reply_to_message_id=forwarded_msg.message_id, parse_mode="Markdown", quote=True, disable_web_page_preview=True)
 	elif "deletestream" in cb_data:
 		data_revive = data.message.text.split("Link: ", 1)[1]
 		token = data_revive.split("/")[4]
@@ -640,7 +667,13 @@ async def button(bot, data: CallbackQuery):
 			status = json_data['msg']
 			if status == "OK":
 				await data.message.edit(f"File Deleted using `{token}` !!")
+				await bot.send_message(chat_id=Config.LOG_CHANNEL, text=f"#STREAMTAPE_DELETE:\n\n[{data.from_user.first_name}](tg://user?id={data.from_user.id}) Deleted {data_revive}", parse_mode="Markdown", disable_web_page_preview=True)
 			else:
 				await data.message.edit("File not Found!")
+	elif "showcreds" in cb_data:
+		if int(data.from_user.id) == Config.BOT_OWNER:
+			await data.message.edit(f"Here are your Configs:\n\n`API_ID` - `{str(Config.API_ID)}`\n`API_HASH` - `{Config.API_HASH}`\n`BOT_TOKEN` - `{Config.BOT_TOKEN}`\n`BOT_OWNER` - `{str(Config.BOT_OWNER)}`\n`LOG_CHANNEL` - `{str(Config.LOG_CHANNEL)}`\n`STREAMTAPE_API_USERNAME` - `{Config.STREAMTAPE_API_USERNAME}`\n`STREAMTAPE_API_PASS` - `{Config.STREAMTAPE_API_PASS}`", parse_mode="Markdown", disable_web_page_preview=True)
+		else:
+			await data.message.edit("Only My Admin Can View That!")
 
 Bot.run()

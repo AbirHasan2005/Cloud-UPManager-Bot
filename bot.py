@@ -32,7 +32,8 @@ async def help(bot, cmd):
 				[InlineKeyboardButton("Delete Streamtape File (Admin Only)", switch_inline_query_current_chat="!stdel ")],
 				[InlineKeyboardButton("Rename Streamtape File (Admin Only)", switch_inline_query_current_chat="!strename ")],
 				[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
-				[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")]
+				[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")],
+				[InlineKeyboardButton("Rmeove Remote URL (Admin Only)", switch_inline_query_current_chat="!strmdel ")]
 			]
 		)
 	)
@@ -71,7 +72,8 @@ async def answer(bot, query: InlineQuery):
 						[InlineKeyboardButton("Delete Streamtape File (Admin Only)", switch_inline_query_current_chat="!stdel ")],
 						[InlineKeyboardButton("Rename Streamtape File (Admin Only)", switch_inline_query_current_chat="!strename ")],
 						[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
-						[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")]
+						[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")],
+						[InlineKeyboardButton("Rmeove Remote URL (Admin Only)", switch_inline_query_current_chat="!strmdel ")]
 					]
 				)
 	        )
@@ -326,6 +328,68 @@ async def answer(bot, query: InlineQuery):
 					answers.append(
 						InlineQueryResultArticle(title="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
 					)
+
+		try:
+			await query.answer(
+				results=answers,
+				cache_time=0
+			)
+		except errors.QueryIdInvalid:
+			await query.answer(
+				results=answers,
+				cache_time=0,
+				switch_pm_text="Error: Search timed out!",
+				switch_pm_parameter="help"
+			)
+	elif search_query.startswith("!strmdel"):
+		token = None
+		try:
+			token = search_query.split("!strmdel ")[1]
+		except IndexError:
+			print("Got IndexError - Skiping [token]")
+			token = ""
+		except Exception as error:
+			print(f"Got Error - {error} - Skiping [token]")
+		if token == "":
+			answers.append(
+				InlineQueryResultArticle(
+					title="!strmdel [token]",
+					description="Put Streamtape Remote Token to remove Remote from Streamtape Account!",
+					input_message_content=InputTextMessageContent(
+						message_text="This for Removing Remote URL from Streamtape Account via Remote Token.\n\n**Format:** `@Cloud_UPManager_Bot !strmdel `__[token]__",
+						parse_mode="Markdown",
+						disable_web_page_preview=True
+					),
+					reply_markup=InlineKeyboardMarkup(
+						[
+							[InlineKeyboardButton("Remove Remote from Streamtape", switch_inline_query_current_chat="!strmdel ")]
+						]
+					)
+				)
+			)
+		else:
+			try:
+				async with aiohttp.ClientSession() as session:
+					api_link = "https://api.streamtape.com/remotedl/remove?login={}&key={}&id={}"
+					hit_api = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, token))
+					data_f = await hit_api.json()
+					status = data_f['msg']
+					if status == "OK":
+						answers.append(
+							InlineQueryResultArticle(
+								title="Removed Remote!",
+								description="Remote URL Removed from Streamtape Account!",
+								input_message_content=InputTextMessageContent(message_text=f"Successfully Removed Remote URL( {remote_link} ) from Streamtape Account!\n\n**Remote Token:** `{token}`", parse_mode="Markdown", disable_web_page_preview=True)
+							)
+						)
+					else:
+						answers.append(
+							InlineQueryResultArticle(title="Can't Remove Remote URL!", description=f"Some Issues with Remote Token!", input_message_content=InputTextMessageContent(message_text=f"Can't Remove Remote URL!\n\nRemote Token: {token}\nHaving Some Issues.", parse_mode="Markdown", disable_web_page_preview=True))
+						)
+			except Exception as e:
+				answers.append(
+					InlineQueryResultArticle(title="Something Went Wrong!", description=f"Error: {e}", input_message_content=InputTextMessageContent(message_text=f"Something Went Wrong!\n\n**Error:** `{e}`", parse_mode="Markdown", disable_web_page_preview=True))
+				)
 
 		try:
 			await query.answer(

@@ -86,7 +86,19 @@ async def answer(bot, query: InlineQuery):
 	elif search_query.startswith("!stdel"):
 		if not int(query.from_user.id) == Config.BOT_OWNER:
 			answers.append(
-				InlineQueryResultArticle(title="You Can't Do That!", description="This is only for Bot Owner!", input_message_content=InputTextMessageContent(message_text="This is only for Bot Owner!\n\nOnly Developer have Streamtape File Delete Rights!"), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")], InlineKeyboardButton("Developer", url="https://t.me/linux_repo")]))
+				InlineQueryResultArticle(
+					title="You Can't Do That!",
+					description="This is only for Bot Owner!",
+					input_message_content=InputTextMessageContent(
+						message_text="This is only for Bot Owner!\n\nOnly Developer have Streamtape File Delete Rights!"
+					),
+					reply_markup=InlineKeyboardMarkup(
+						[
+							[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")],
+							[InlineKeyboardButton("Developer", url="https://t.me/linux_repo")]
+						]
+					)
+				)
 			)
 		else:
 			try:
@@ -153,8 +165,7 @@ async def answer(bot, query: InlineQuery):
 				)
 
 		try:
-			await bot.answer_inline_query(
-				query.id,
+			await query.answer(
 				results=answers,
 				cache_time=0
 			)
@@ -249,7 +260,19 @@ async def answer(bot, query: InlineQuery):
 	elif search_query.startswith("!strename"):
 		if not int(query.from_user.id) == Config.BOT_OWNER:
 			answers.append(
-				InlineQueryResultArticle(title="You Can't Do That!", description="This is only for Bot Owner!", input_message_content=InputTextMessageContent(message_text="This is only for Bot Owner!\n\nOnly Developer have Streamtape File Delete Rights!"), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")], InlineKeyboardButton("Developer", url="https://t.me/linux_repo")]))
+				InlineQueryResultArticle(
+					title="You Can't Do That!",
+					description="This is only for Bot Owner!",
+					input_message_content=InputTextMessageContent(
+						message_text="This is only for Bot Owner!\n\nOnly Developer have Streamtape File Delete Rights!"
+					),
+					reply_markup=InlineKeyboardMarkup(
+						[
+							[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")],
+							[InlineKeyboardButton("Developer", url="https://t.me/linux_repo")]
+						]
+					)
+				)
 			)
 		else:
 			parts = search_query.split(" ", 2)
@@ -305,8 +328,7 @@ async def answer(bot, query: InlineQuery):
 					)
 
 		try:
-			await bot.answer_inline_query(
-				query.id,
+			await query.answer(
 				results=answers,
 				cache_time=0
 			)

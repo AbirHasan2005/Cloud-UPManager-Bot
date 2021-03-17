@@ -153,7 +153,8 @@ async def answer(bot, query: InlineQuery):
 				)
 
 		try:
-			await query.answer(
+			await bot.answer_inline_query(
+				query.id,
 				results=answers,
 				cache_time=0
 			)
@@ -304,7 +305,8 @@ async def answer(bot, query: InlineQuery):
 					)
 
 		try:
-			await query.answer(
+			await bot.answer_inline_query(
+				query.id,
 				results=answers,
 				cache_time=0
 			)

@@ -534,7 +534,7 @@ async def answer(bot, query: InlineQuery):
 						answers.append(
 							InlineQueryResultArticle(
 								title=f"TOKEN: {input_f}",
-								description=f"Uploaded: {humanbytes(downloaded)} Bytes, Total: {humanbytes(total_size)} Bytes",
+								description=f"Uploaded: {humanbytes(downloaded)}, Total: {humanbytes(total_size)}",
 								input_message_content=InputTextMessageContent(message_text=f"**Token:** `{input_f}`\n**Uploaded:** `{humanbytes(downloaded)}`\n**Total:** `{humanbytes(total_size)}`\n**Added Remote at:** `{added_at}`\n**Last Updated at:** `{last_update}`\n\n**URL:** {url}", parse_mode="Markdown", disable_web_page_preview=True),
 								reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Show Status", switch_inline_query_current_chat=f"!show {input_f}")]])
 							)

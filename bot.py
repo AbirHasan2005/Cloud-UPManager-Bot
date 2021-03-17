@@ -4,7 +4,6 @@ import os
 import time
 import json
 import asyncio
-# import requests
 import aiohttp
 from configs import Config
 from datetime import datetime
@@ -18,7 +17,7 @@ Bot = Client(Config.SESSION_NAME, bot_token=Config.BOT_TOKEN, api_id=Config.API_
 
 @Bot.on_message(filters.command("start"))
 async def start(bot, cmd):
-	await cmd.reply_text("HI, I am Cloud Uploads Manager Bot!\n\nI can Do a Lot of Things, Check > /help <")
+	await cmd.reply_text("HI, I am Cloud Uploads Manager Bot!\n\nI can Do a Lot of Things, Check > /help <", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Developer", url="https://t.me/AbirHasan2005"), InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")], [InlineKeyboardButton("Bots Channel", url="https://t.me/Discovery_Updates")]]))
 
 @Bot.on_message(filters.command("help"))
 async def help(bot, cmd):
@@ -29,8 +28,9 @@ async def help(bot, cmd):
 		reply_markup=InlineKeyboardMarkup(
 			[
 				[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo"), InlineKeyboardButton("Developer", url="https://t.me/AbirHasan2005")],
-				[InlineKeyboardButton("Delete GoFile", switch_inline_query_current_chat="!godel "), InlineKeyboardButton("Delete Streamtape", switch_inline_query_current_chat="!stdel ")],
-				[InlineKeyboardButton("Rename Streamtape File", switch_inline_query_current_chat="!strename ")],
+				[InlineKeyboardButton("Delete GoFile.io File", switch_inline_query_current_chat="!godel ")],
+				[InlineKeyboardButton("Delete Streamtape File (Admin Only)", switch_inline_query_current_chat="!stdel ")],
+				[InlineKeyboardButton("Rename Streamtape File (Admin Only)", switch_inline_query_current_chat="!strename ")],
 				[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
 				[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")]
 			]
@@ -67,8 +67,9 @@ async def answer(bot, query: InlineQuery):
 	            reply_markup=InlineKeyboardMarkup(
 					[
 						[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo"), InlineKeyboardButton("Developer", url="https://t.me/AbirHasan2005")],
-						[InlineKeyboardButton("Delete GoFile", switch_inline_query_current_chat="!godel "), InlineKeyboardButton("Delete Streamtape", switch_inline_query_current_chat="!stdel ")],
-						[InlineKeyboardButton("Rename Streamtape File", switch_inline_query_current_chat="!strename ")],
+						[InlineKeyboardButton("Delete GoFile.io File", switch_inline_query_current_chat="!godel ")],
+						[InlineKeyboardButton("Delete Streamtape File (Admin Only)", switch_inline_query_current_chat="!stdel ")],
+						[InlineKeyboardButton("Rename Streamtape File (Admin Only)", switch_inline_query_current_chat="!strename ")],
 						[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
 						[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")]
 					]

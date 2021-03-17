@@ -92,8 +92,24 @@ async def answer(bot, query: InlineQuery):
 				await asyncio.sleep(5) # Waiting for 5 Sec for getting Correct User Input!
 				async with aiohttp.ClientSession() as session:
 					api_link = "https://api.streamtape.com/file/delete?login={}&key={}&file={}"
-					main_text = search_query.split("!stdel ")[1]
-					if main_text == "":
+					main_text = None
+					splited = None
+					token = None
+					try:
+						main_text = search_query.split("!stdel ")[1]
+						splited = main_text.split(" ")[0]
+						token = splited.split("/")[4]
+					except IndexError:
+						print("Got IndexError - Skiping [token]")
+						main_text = ""
+						splited = ""
+						token = ""
+					except Exception as error:
+						print(f"Got Error - {error} - Skiping [token]")
+						main_text = ""
+						splited = ""
+						token = ""
+					if token == "":
 						answers.append(
 							InlineQueryResultArticle(
 								title="!stdel [file_link]",
@@ -111,8 +127,6 @@ async def answer(bot, query: InlineQuery):
 							)
 						)
 					else:
-						splited = main_text.split(" ")[0]
-						token = splited.split("/")[4]
 						delete = await session.get(api_link.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, token))
 						data = await delete.json()
 						status = data['msg']
@@ -154,8 +168,28 @@ async def answer(bot, query: InlineQuery):
 			await asyncio.sleep(5) # Waiting for 5 Sec for getting Correct User Input!
 			async with aiohttp.ClientSession() as session:
 				api_link = "https://apiv2.gofile.io/deleteUpload?c={}&ac={}"
-				main_text = search_query.split("!godel ")[1]
-				if main_text == "":
+				main_text = None
+				splited = None
+				token = None
+				adminCode = None
+				try:
+					main_text = search_query.split("!godel ")[1]
+					splited = main_text.split(" ")[0]
+					token = splited.split("/")[4]
+					adminCode = main_text.split(" ", 1)[1]
+				except IndexError:
+					print("Got IndexError - Skiping [token] [adminCode]")
+					main_text = ""
+					splited = ""
+					token = ""
+					adminCode = ""
+				except Exception as error:
+					print(f"Got Error - {error} - Skiping [token] [adminCode]")
+					main_text = ""
+					splited = ""
+					token = ""
+					adminCode = ""
+				if (token == "" or adminCode == ""):
 					answers.append(
 						InlineQueryResultArticle(
 							title="!godel [file_link] [AdminCode]",
@@ -173,9 +207,6 @@ async def answer(bot, query: InlineQuery):
 						)
 					)
 				else:
-					splited = main_text.split(" ")[0]
-					token = splited.split("/")[4]
-					adminCode = main_text.split(" ", 1)[1]
 					response = await session.get(api_link.format(token, adminCode))
 					data_f = await response.json()
 					status = data_f['status']
@@ -220,8 +251,15 @@ async def answer(bot, query: InlineQuery):
 			)
 		else:
 			parts = search_query.split(" ", 2)
-			token = parts[1]
-			new_filename = input_f[2]
+			token, new_filename = "", ""
+			try:
+				token, new_filename = parts[1], input_f[2]
+			except IndexError:
+				print("Got IndexError - Skiping [token], [new_filename]")
+				token, new_filename = "", ""
+			except Exception as error:
+				print(f"Got Error - {error} - Skiping [token], [new_filename]")
+				token, new_filename = "", ""
 			if (input_f == "" or token == "" or new_filename == ""):
 				answers.append(
 					InlineQueryResultArticle(
@@ -277,7 +315,14 @@ async def answer(bot, query: InlineQuery):
 				switch_pm_parameter="help"
 			)
 	elif search_query.startswith("!stremote"):
-		remote_link = search_query.split("!stremote ")[1]
+		remote_link = None
+		try:
+			remote_link = search_query.split("!stremote ")[1]
+		except IndexError:
+			print("Got IndexError - Skiping [download_url]")
+			remote_link = ""
+		except Exception as error:
+			print(f"Got Error - {error} - Skiping [download_url]")
 		if remote_link == "":
 			answers.append(
 				InlineQueryResultArticle(
@@ -334,7 +379,15 @@ async def answer(bot, query: InlineQuery):
 				switch_pm_parameter="help"
 			)
 	elif search_query.startswith("!show"):
-		input_f = search_query.split("!show ")[1]
+		input_f = None
+		try:
+			input_f = search_query.split("!show ")[1]
+		except IndexError:
+			print("Got IndexError - Skiping [token]")
+			input_f = ""
+		except Exception as error:
+			print(f"Got Error - {error} - Skiping [token]")
+			input_f = ""
 		if input_f == "":
 			answers.append(
 				InlineQueryResultArticle(
@@ -401,9 +454,6 @@ async def button(bot, data: CallbackQuery):
 	cb_data = data.data
 	if "uptogofile" in cb_data:
 		downloadit = data.message.reply_to_message
-		# if not (int(downloadit.video.file_size) or int(downloadit.document.file_size)) <= 25500:
-		# 	await data.message.edit("Sorry, I can only upload 500MB on GoFile.io !!")
-		# 	return
 		a = await data.message.edit("Downloading to my Server ...", parse_mode="Markdown", disable_web_page_preview=True)
 		dl_loc = str(data.from_user.id) + "/"
 		if not os.path.isdir(dl_loc):
@@ -445,9 +495,6 @@ async def button(bot, data: CallbackQuery):
 			await a.edit(f"Something went wrong!\n\n**Error:** `{err}`")
 	elif "uptostreamtape" in cb_data:
 		downloadit = data.message.reply_to_message
-		# if not (int(downloadit.video.file_size) or int(downloadit.document.file_size)) <= 25500:
-		# 	await data.message.edit("Sorry, I can only upload 500MB on GoFile.io !!")
-		# 	return
 		a = await data.message.edit("Downloading to my Server ...", parse_mode="Markdown", disable_web_page_preview=True)
 		dl_loc = str(data.from_user.id) + "/"
 		if not os.path.isdir(dl_loc):
@@ -495,14 +542,13 @@ async def button(bot, data: CallbackQuery):
 					)
 				)
 	elif "deletestream" in cb_data:
-		data_revive = data.message.text.split("Link: ", 1)
-		data_revive = data_revive[1]
+		data_revive = data.message.text.split("Link: ", 1)[1]
 		token = data_revive.split("/")[4]
 		async with aiohttp.ClientSession() as session:
 			del_api = "https://api.streamtape.com/file/delete?login={}&key={}&file={}"
 			data_f = await session.get(del_api.format(Config.STREAMTAPE_API_USERNAME, Config.STREAMTAPE_API_PASS, token))
 			json_data = await data_f.json()
-			status = data_f['msg']
+			status = json_data['msg']
 			if status == "OK":
 				await data.message.edit(f"File Deleted using `{token}` !!")
 			else:

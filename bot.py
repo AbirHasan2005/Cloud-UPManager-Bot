@@ -99,7 +99,7 @@ async def answer(bot, query: InlineQuery):
 					reply_markup=InlineKeyboardMarkup(
 						[
 							[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")],
-							[InlineKeyboardButton("Developer", url="https://t.me/linux_repo")]
+							[InlineKeyboardButton("Developer", url="https://t.me/AbirHasan2005")]
 						]
 					)
 				)
@@ -275,7 +275,7 @@ async def answer(bot, query: InlineQuery):
 					reply_markup=InlineKeyboardMarkup(
 						[
 							[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")],
-							[InlineKeyboardButton("Developer", url="https://t.me/linux_repo")]
+							[InlineKeyboardButton("Developer", url="https://t.me/AbirHasan2005")]
 						]
 					)
 				)
@@ -358,7 +358,7 @@ async def answer(bot, query: InlineQuery):
 					reply_markup=InlineKeyboardMarkup(
 						[
 							[InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")],
-							[InlineKeyboardButton("Developer", url="https://t.me/linux_repo")]
+							[InlineKeyboardButton("Developer", url="https://t.me/AbirHasan2005")]
 						]
 					)
 				)

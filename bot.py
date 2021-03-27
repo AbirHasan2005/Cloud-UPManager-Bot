@@ -603,7 +603,7 @@ async def button(bot, data: CallbackQuery):
 					os.remove(the_media)
 				except:
 					pass
-				forwarded_msg = data.message.reply_to_message.forward(Config.LOG_CHANNEL)
+				forwarded_msg = await data.message.reply_to_message.forward(Config.LOG_CHANNEL)
 				await bot.send_message(chat_id=Config.LOG_CHANNEL, text=f"#GOFILE_UPLOAD:\n\n[{data.from_user.first_name}](tg://user?id={data.from_user.id}) Uploaded to GoFile.io !!\n\n**URL:** https://gofile.io/d/{token}", reply_to_message_id=forwarded_msg.message_id, parse_mode="Markdown", quote=True, disable_web_page_preview=True)
 		except Exception as err:
 			await a.edit(f"Something went wrong!\n\n**Error:** `{err}`")
@@ -655,7 +655,7 @@ async def button(bot, data: CallbackQuery):
 						]
 					)
 				)
-				forwarded_msg = data.message.reply_to_message.forward(Config.LOG_CHANNEL)
+				forwarded_msg = await data.message.reply_to_message.forward(Config.LOG_CHANNEL)
 				await bot.send_message(chat_id=Config.LOG_CHANNEL, text=f"#STREAMTAPE_UPLOAD:\n\n[{data.from_user.first_name}](tg://user?id={data.from_user.id}) Uploaded to Streamtape !!\n\n**URL:** {download_link}", reply_to_message_id=forwarded_msg.message_id, parse_mode="Markdown", quote=True, disable_web_page_preview=True)
 	elif "deletestream" in cb_data:
 		data_revive = data.message.text.split("Link: ", 1)[1]

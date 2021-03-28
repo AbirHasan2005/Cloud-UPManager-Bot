@@ -33,7 +33,7 @@ async def help(bot, cmd):
 				[InlineKeyboardButton("Rename Streamtape File (Admin Only)", switch_inline_query_current_chat="!strename ")],
 				[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
 				[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")],
-				[InlineKeyboardButton("Rmeove Remote URL (Admin Only)", switch_inline_query_current_chat="!strmdel ")],
+				[InlineKeyboardButton("Remove Remote URL (Admin Only)", switch_inline_query_current_chat="!strmdel ")],
 				[InlineKeyboardButton("Show Configs (Admin Only)", callback_data="showcreds")]
 			]
 		)
@@ -74,7 +74,7 @@ async def answer(bot, query: InlineQuery):
 						[InlineKeyboardButton("Rename Streamtape File (Admin Only)", switch_inline_query_current_chat="!strename ")],
 						[InlineKeyboardButton("Add Remote URL in Streamtape", switch_inline_query_current_chat="!stremote ")],
 						[InlineKeyboardButton("Get Status of Streamtape Token", switch_inline_query_current_chat="!show ")],
-						[InlineKeyboardButton("Rmeove Remote URL (Admin Only)", switch_inline_query_current_chat="!strmdel ")],
+						[InlineKeyboardButton("Remove Remote URL (Admin Only)", switch_inline_query_current_chat="!strmdel ")],
 						[InlineKeyboardButton("Show Configs (Admin Only)", callback_data="showcreds")]
 					]
 				)

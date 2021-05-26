@@ -41,7 +41,7 @@ This is in Development Stage. So it will be buggy a lot. If you find any Bugs th
 	- Get this from [Here](https://streamtape.com/accpanel#collapseThree).
 
 ### Deploy Now:
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/AbirHasan2005/Cloud-UPManager-Bot)
 
 ### Support Group:
 <a href="https://t.me/linux_repo"><img src="https://img.shields.io/badge/Telegram-Join%20Telegram%20Group-blue.svg?logo=telegram"></a>

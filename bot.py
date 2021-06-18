@@ -2,37 +2,34 @@
 
 import os
 import time
-import json
 import asyncio
 import aiohttp
 from configs import Config
-from datetime import datetime
 from pyrogram import Client, filters, errors
 from core.display_progress import progress_for_pyrogram, humanbytes
-from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked, PeerIdInvalid
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ForceReply, \
-    InlineQueryResultArticle, InputTextMessageContent, InlineQuery
-from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant, UsernameNotOccupied, ChatAdminRequired, \
-    PeerIdInvalid
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InlineQueryResultArticle, \
+    InputTextMessageContent, InlineQuery
 
 Bot = Client(Config.SESSION_NAME, bot_token=Config.BOT_TOKEN, api_id=Config.API_ID, api_hash=Config.API_HASH)
 
 
 @Bot.on_message(filters.command("start"))
-async def start(bot, cmd):
-    await cmd.reply_text("HI, I am Cloud Uploads Manager Bot!\n\nI can Do a Lot of Things, Check > /help <",
-                         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Developer",
-                                                                                  url="https://t.me/AbirHasan2005"),
-                                                             InlineKeyboardButton("Support Group",
-                                                                                  url="https://t.me/linux_repo")], [
-                                                                InlineKeyboardButton("Bots Channel",
-                                                                                     url="https://t.me/Discovery_Updates")],
-                                                            [InlineKeyboardButton("Bot's Source Code",
-                                                                                  url="https://github.com/AbirHasan2005/Cloud-UPManager-Bot")]]))
+async def start_handler(_, cmd):
+    await cmd.reply_text(
+        "HI, I am Cloud Uploads Manager Bot!\n\nI can Do a Lot of Things, Check > /help <",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("Developer", url="https://t.me/AbirHasan2005"),
+                 InlineKeyboardButton("Support Group", url="https://t.me/linux_repo")],
+                [InlineKeyboardButton("Bots Channel", url="https://t.me/Discovery_Updates")],
+                [InlineKeyboardButton("Bot's Source Code", url="https://github.com/AbirHasan2005/Cloud-UPManager-Bot")]
+            ]
+        )
+    )
 
 
 @Bot.on_message(filters.command("help"))
-async def help(bot, cmd):
+async def help_handler(_, cmd):
     await cmd.reply_text(
         Config.HELP_TEXT,
         parse_mode="Markdown",
@@ -56,8 +53,7 @@ async def help(bot, cmd):
 
 
 @Bot.on_message(filters.private & filters.media)
-async def main(bot, message):
-    admin = message.from_user.id
+async def _main(_, message):
     await message.reply_text(
         "Where you want to Upload?",
         parse_mode="Markdown",
@@ -330,16 +326,13 @@ async def answer(bot, query: InlineQuery):
             )
         else:
             parts = search_query.split(" ", 2)
-            token, new_filename = "", ""
             try:
-                token, new_filename = parts[1], input_f[2]
+                token, new_filename = parts[1], parts[2]
             except IndexError:
-                print("Got IndexError - Skiping [token], [new_filename]")
                 token, new_filename = "", ""
             except Exception as error:
-                print(f"Got Error - {error} - Skiping [token], [new_filename]")
                 token, new_filename = "", ""
-            if (input_f == "" or token == "" or new_filename == ""):
+            if (parts == "") or (token == "") or (new_filename == ""):
                 answers.append(
                     InlineQueryResultArticle(
                         title="!strename [token] [new_filename]",
@@ -580,7 +573,6 @@ async def answer(bot, query: InlineQuery):
                 switch_pm_parameter="help"
             )
     elif search_query.startswith("!show"):
-        input_f = None
         try:
             input_f = search_query.split("!show ")[1]
         except IndexError:
@@ -669,7 +661,7 @@ async def button(bot, data: CallbackQuery):
         downloadit = data.message.reply_to_message
         a = await data.message.edit("Downloading to my Server ...", parse_mode="Markdown",
                                     disable_web_page_preview=True)
-        dl_loc = str(data.from_user.id) + "/"
+        dl_loc = Config.DOWNLOAD_DIR + "/" + str(data.from_user.id) + "/"
         if not os.path.isdir(dl_loc):
             os.makedirs(dl_loc)
         c_time = time.time()
@@ -697,13 +689,13 @@ async def button(bot, data: CallbackQuery):
                 response = await session.post(URL, data=files)
                 data_f = await response.json()
                 token = data_f['data']['code']
-                code = data_f['data']['adminCode']
-                status = data_f['status']
-                filename = the_media.split("/")[-1].replace("_", " ")
+                download_page = data_f['data']['downloadPage']
+                direct_download_link = data_f['data']['directLink']
+                filename = data_f['data']['fileName']
                 await a.edit(
-                    f"**File Name:** `{filename}`\n\n**AdminCode:** `{code}`\n\n**Download Link:** `https://gofile.io/d/{token}`",
+                    f"**File Name:** `{filename}`\n\n**Download Page:** `{download_page}`\n\n**Direct Download Link:** `{direct_download_link}`",
                     disable_web_page_preview=True, reply_markup=InlineKeyboardMarkup(
-                        [[InlineKeyboardButton("Download Link", url=f"https://gofile.io/d/{token}")]]))
+                        [[InlineKeyboardButton("Download Page", url=download_page)]]))
                 try:
                     os.remove(the_media)
                 except:
@@ -719,7 +711,7 @@ async def button(bot, data: CallbackQuery):
         downloadit = data.message.reply_to_message
         a = await data.message.edit("Downloading to my Server ...", parse_mode="Markdown",
                                     disable_web_page_preview=True)
-        dl_loc = str(data.from_user.id) + "/"
+        dl_loc = Config.DOWNLOAD_DIR + "/" + str(data.from_user.id) + "/"
         if not os.path.isdir(dl_loc):
             os.makedirs(dl_loc)
         c_time = time.time()
@@ -756,7 +748,7 @@ async def button(bot, data: CallbackQuery):
                     disable_web_page_preview=True)
                 return
             else:
-                a = await data.message.reply_to_message.reply_text(
+                await data.message.reply_to_message.reply_text(
                     f"**File Name:** `{filename}`\n\n**Download Link:** `{download_link}`",
                     parse_mode="Markdown",
                     disable_web_page_preview=True,

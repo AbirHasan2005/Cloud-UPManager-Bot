@@ -20,7 +20,8 @@ I will Upload the Media to that server.
 
 Currently I can Upload to:
 > GoFile.io
-> streamtape.com
+> Streamtape.com
+> Pixeldrain.com
 
 Also I can do a lot of things from Inline!
 __Check Below Buttons >>>__
